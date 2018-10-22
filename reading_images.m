@@ -136,20 +136,23 @@ H=entropiaJMRC(histograma)
 %% subpaso 1
 clear all; close all;
 A=imread('bird.pgm');
-histograma= histc(A,[0:255]);
-H=entropiaJMRC(histograma)/255;
+histograma= histc(A(:),[0:255]);
+H1=entropiaJMRC(histograma);
 
 %% subpaso 2
-A_dif=int8(A);   
-A_dif=A_dif(2:256,:)-A_dif(1:255,:);
+A_dif=int16(A);
+C=int16(A(:,1));
+A_dif=A_dif(:,2:256)-A_dif(:,1:255);
+
+A_dif=[C,A_dif];
 
 %% subpaso 3
-histograma= histc(A_dif,[0:255]);
+histograma= histc(A_dif(:),[-255:255]);%-255 255
 subplot(1,2,1); imshow(A_dif);
-subplot(1,2,2);bar([0:255],histograma);
+subplot(1,2,2);bar([-255:255],histograma);%-255 255
 
 %% subpaso4
-H=entropiaJMRC(histograma)/255
+H=entropiaJMRC(histograma);
 
 %% Paso 20
 
@@ -190,7 +193,7 @@ M=100;
 N=4;  
 rng(0); 
 codigosMxN=randsrc(M,N,[1:tam;probabilidades(1,:)]);
-palabrasMxN=letras2num(indicespos(codigosMxN));
+palabrasMxN=letras(indicespos(codigosMxN));
 
 fid = fopen('palabras4letrasgeneradasRAE.txt','w');
 for i=1:M
@@ -205,6 +208,5 @@ suma=sum(histograma);
 prob= histograma./suma;
 prob(find(prob==0.0))=[];
 resultado=-sum(prob.*log2(prob));
-
 
 end
