@@ -182,18 +182,17 @@ fid = fopen('PalabrasDRAE.4letras.txt', 'r')
 letras=fscanf(fid,'%s');
 letras2num=uint16(letras); %observa la conversión de los dos bytes
 
-%% Paso 24
+
 histograma=histc(letras2num,[0:256*256-1]); %observa el rango
 indicespos=find(histograma>0);
 probabilidades=histograma(indicespos)/sum(histograma(indicespos));
 
-%% Paso 25
 tam=numel(indicespos)
 M=100;
 N=4;  
 rng(0); 
-codigosMxN=randsrc(M,N,[1:tam;probabilidades(1,:)]);
-palabrasMxN=letras(indicespos(codigosMxN));
+codigosMxN=randsrc(M,N,[indicespos(1:tam);probabilidades(1:tam)])-1;
+palabrasMxN=codigosMxN;
 
 fid = fopen('palabras4letrasgeneradasRAE.txt','w');
 for i=1:M
