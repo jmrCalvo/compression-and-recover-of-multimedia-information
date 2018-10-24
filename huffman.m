@@ -259,6 +259,47 @@ fotograma2=yuv_array(:,:,1,2);
 figure; imshow(fotograma1);
 figure; imshow(fotograma2);
 
+
+%% Paso 22
+
+[M,N]=size(fotograma1);
+seq=reshape(fotograma1,1,M*N);
+letras=[0:256*256-1];
+histo=hist(seq,letras);  
+
+pos_hist_posit=find(histo>0);
+letras_usadas=letras(pos_hist_posit);  
+hist_letras_usadas=histo(pos_hist_posit);
+
+
+subplot(1,1,1); bar([0:256*256-1],histo);
+
+
+prob_letras_usadas=hist_letras_usadas/sum(hist_letras_usadas(:));  
+
+
+[dict,avglen] = huffmandict(letras_usadas,prob_letras_usadas) ; 
+seq_codificada = huffmanenco(seq,dict); 
+
+L=(length(letras_usadas)+1)*2+ ...
+    (length(letras_usadas)+1)*8+ ...
+    ceil(length(seq_codificada)/8);
+
+fprintf('Tamaño del fichero original de fotograma2 en bytes %d\n',M*N);
+fprintf('Tamaño del fichero comprimido de fotograma2 en bytes %d\n',L);
+deco=huffmandeco(seq_codificada,dict);
+fprintf('Factor de compresión de fotograma2 %3.5f\n\n',M*N/L)
+deco=huffmandeco(seq_codificada,dict);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,deco))
+
+
+
+
+%% Paso 23
+
+
+
 end
 
 
