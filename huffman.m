@@ -121,42 +121,144 @@ seq=reshape(img2,1,U*V);
 
 
 %% Paso 16 
-[U2,V2]=size(img);
-seq2=reshape(img,1,U2*V2); 
-fprintf('Tamaño del fichero original en bytes  %d\n',numel(seq2))
-colores=[0:255];
-histo=histc(seq2,colores); %calculamos histograma e indices
-tam=numel(seq2);
-prob=histo./tam;
-[dict,avglen] = huffmandict(histo,prob) ; %construimos el diccionario
+[M,N]=size(img);
+seq=reshape(img,1,M*N);
+letras=[0:256*256-1];
+histo=hist(seq,letras);  
 
-seq_codificada = huffmanenco(seq2,dict); %codificamos la señal
-tamagno_comprimido=(length(prob)+1)*1+ ...
-    (length(prob)+1)*8+ ...
+pos_hist_posit=find(histo>0);
+letras_usadas=letras(pos_hist_posit);  
+hist_letras_usadas=histo(pos_hist_posit);  
+prob_letras_usadas=hist_letras_usadas/sum(hist_letras_usadas(:));  
+
+
+[dict,avglen] = huffmandict(letras_usadas,prob_letras_usadas) ; 
+seq_codificada = huffmanenco(seq,dict); 
+
+L=(length(letras_usadas)+1)*2+ ...
+    (length(letras_usadas)+1)*8+ ...
     ceil(length(seq_codificada)/8);
-fprintf('Tamaño fichero comprimido en bytes  %d\n',tamagno_comprimido)
- factorcompresion=numel(seq2)/tamagno_comprimido;
-    fprintf('factor de compresion %d\n',factorcompresion)
 
+fprintf('Tamaño del fichero original en bytes %d\n',M*N);
+fprintf('Tamaño del fichero comprimido en bytes %d\n',L);
+deco=huffmandeco(seq_codificada,dict);
+fprintf('Factor de compresión %3.5f\n\n',M*N/L)
+deco=huffmandeco(seq_codificada,dict);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,deco))
     
 %% Paso 17 
 
 
-fprintf('Tamaño del fichero original en bytes  %d\n',numel(seq))
-colores=[0:255];
-histo=histc(seq,colores); %calculamos histograma e indices
-tam=numel(seq);
-prob=histo./tam;
-[dict,avglen] = huffmandict(histo,prob) ; %construimos el diccionario
-seq_codificada = huffmanenco(seq,dict); %codificamos la señal
-tamagno_comprimido=(length(histo)+1)*1+ ...
-    (length(histo)+1)*8+ ...
-    ceil(length(seq_codificada)/8);
-fprintf('Tamaño fichero comprimido en bytes  %d\n',tamagno_comprimido)
- factorcompresion=numel(seq)/tamagno_comprimido;
-    fprintf('factor de compresion %d\n',factorcompresion)
+[M,N]=size(img2);
+seq=reshape(img2,1,M*N);
+letras=[0:256*256-1];
+histo=hist(seq,letras);  
 
-        
+pos_hist_posit=find(histo>0);
+letras_usadas=letras(pos_hist_posit);  
+hist_letras_usadas=histo(pos_hist_posit);  
+prob_letras_usadas=hist_letras_usadas/sum(hist_letras_usadas(:));  
+
+
+[dict,avglen] = huffmandict(letras_usadas,prob_letras_usadas) ; 
+seq_codificada = huffmanenco(seq,dict); 
+
+L=(length(letras_usadas)+1)*2+ ...
+    (length(letras_usadas)+1)*8+ ...
+    ceil(length(seq_codificada)/8);
+
+fprintf('Tamaño del fichero original en bytes %d\n',2*M*N);
+fprintf('Tamaño del fichero comprimido en bytes %d\n',L);
+deco=huffmandeco(seq_codificada,dict);
+fprintf('Factor de compresión %3.5f\n\n',M*N*2/L)
+deco=huffmandeco(seq_codificada,dict);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,deco))
+%% Paso 19
+
+close all; clear all;
+img=imread('goldhill.pgm');
+imshow(img);
+img16=uint16(img);
+img2=255*img16(:,1:2:size(img,2))+img16(:,2:2:size(img,2));
+
+%% Paso 20
+
+close all; clear all;
+img=imread('bird.pgm');
+imshow(img);
+img16=uint16(img);
+img2=255*img16(:,1:2:size(img,2))+img16(:,2:2:size(img,2));
+
+
+
+[M,N]=size(img);
+seq=reshape(img,1,M*N);
+letras=[0:256*256-1];
+histo=hist(seq,letras);  
+
+pos_hist_posit=find(histo>0);
+letras_usadas=letras(pos_hist_posit);  
+hist_letras_usadas=histo(pos_hist_posit);  
+prob_letras_usadas=hist_letras_usadas/sum(hist_letras_usadas(:));  
+
+
+[dict,avglen] = huffmandict(letras_usadas,prob_letras_usadas) ; 
+seq_codificada = huffmanenco(seq,dict); 
+
+L=(length(letras_usadas)+1)*2+ ...
+    (length(letras_usadas)+1)*8+ ...
+    ceil(length(seq_codificada)/8);
+
+fprintf('Tamaño del fichero original de img en bytes %d\n',2*M*N);
+fprintf('Tamaño del fichero comprimido de img en bytes %d\n',L);
+deco=huffmandeco(seq_codificada,dict);
+fprintf('Factor de compresión de img %3.5f\n\n',M*N*2/L)
+deco=huffmandeco(seq_codificada,dict);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,deco))
+
+[M,N]=size(img2);
+seq=reshape(img2,1,M*N);
+letras=[0:256*256-1];
+histo=hist(seq,letras);  
+
+pos_hist_posit=find(histo>0);
+letras_usadas=letras(pos_hist_posit);  
+hist_letras_usadas=histo(pos_hist_posit);  
+prob_letras_usadas=hist_letras_usadas/sum(hist_letras_usadas(:));  
+
+
+[dict,avglen] = huffmandict(letras_usadas,prob_letras_usadas) ; 
+seq_codificada = huffmanenco(seq,dict); 
+
+L=(length(letras_usadas)+1)*2+ ...
+    (length(letras_usadas)+1)*8+ ...
+    ceil(length(seq_codificada)/8);
+
+fprintf('Tamaño del fichero original de img2 en bytes %d\n',2*M*N);
+fprintf('Tamaño del fichero comprimido de img2 en bytes %d\n',L);
+deco=huffmandeco(seq_codificada,dict);
+fprintf('Factor de compresión de img2 %3.5f\n\n',M*N*2/L)
+deco=huffmandeco(seq_codificada,dict);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,deco))
+
+%% Paso 21
+
+clc, close all; clear all;
+file_name = 'miss_am.yuv';
+file_format = 'QCIF_PAL';
+num_of_frames = 30;
+[yuv_movie, yuv_array] = readYUV(file_name, num_of_frames, ...
+file_format);
+implay(yuv_movie)
+fotograma1=yuv_array(:,:,1,1);
+fotograma2=yuv_array(:,:,1,2);
+figure; imshow(fotograma1);
+figure; imshow(fotograma2);
+
 end
 
 
