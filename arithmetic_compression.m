@@ -80,12 +80,12 @@ clear all;close all; clc;
 sol=[]
 medias=[]
 entropias=[]
+rng(0);
 for j=1:6
     sol_partial=[]
    for i=1:5
     maximo= 0.0;
     minimo=0.0;
-    %%rng(0);
     while maximo==minimo
     seq=randsrc(1,10^j,[1 2; 0.1 0.9]);
     maximo=max(seq(:));
@@ -103,12 +103,13 @@ for j=1:6
    medias=[medias,media]
 end
 
-subplot(1,3,1);plot(entropias);
-subplot(1,3,2);bar([1:30],sol)
+subplot(1,3,1);plot(entropias);%dibujar por puntos
+subplot(1,3,2);bar([1:30],sol);
 subplot(1,3,3);bar([1:6],medias);
 
 
 %% Paso 14 
+%%texto10
 clear all;close all; clc;
 
 fichero='texto10.txt'
@@ -116,23 +117,125 @@ fid=fopen(fichero, 'r')
 bits=fread(fid,inf,'*uint8');
 fclose(fid)
 
-seq=reshape(bits,1,length(bits));
 
-uv = unique(seq);
-counts  = histc(seq,uv);
+seq_original=reshape(bits,1,length(bits));
 
-aux=ones(1,length(seq));
+uv = unique(seq_original);
+counts  = histc(seq_original,uv);
+
+aux=ones(1,length(seq_original));
 aux=aux.*47;
-seq=seq-uint8(aux)
+seq=seq_original-uint8(aux);
 
 code=arithenco(seq,counts);
 
 indseqdec=arithdeco(code,counts,length(seq));
-indseqdec=indseqdec+uint8(aux)
-seqdecf=alf(indseqdec);
+seqdecf=uv(indseqdec);
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
-    isequal(seq,seqdecf))
+    isequal(seq_original,seqdecf))
 
+%% texto100
+clear all;close all; clc;
+
+fichero='texto100.txt'
+fid=fopen(fichero, 'r')
+bits=fread(fid,inf,'*uint8');
+fclose(fid)
+
+
+seq_original=reshape(bits,1,length(bits));
+
+uv = unique(seq_original);
+counts  = histc(seq_original,uv);
+
+aux=ones(1,length(seq_original));
+aux=aux.*47;
+seq=seq_original-uint8(aux);
+
+code=arithenco(seq,counts);
+
+indseqdec=arithdeco(code,counts,length(seq));
+%definir alfa
+seqdecf=uv(indseqdec);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq_original,seqdecf))
+%% texto1000
+clear all;close all; clc;
+
+fichero='texto1000.txt'
+fid=fopen(fichero, 'r')
+bits=fread(fid,inf,'*uint8');
+fclose(fid)
+
+
+seq_original=reshape(bits,1,length(bits));
+
+uv = unique(seq_original);
+counts  = histc(seq_original,uv);
+
+aux=ones(1,length(seq_original));
+aux=aux.*47;
+seq=seq_original-uint8(aux);
+
+code=arithenco(seq,counts);
+
+indseqdec=arithdeco(code,counts,length(seq));
+%definir alfa
+seqdecf=uv(indseqdec);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq_original,seqdecf))
+
+%% texto10000
+clear all;close all; clc;
+
+fichero='texto10000.txt'
+fid=fopen(fichero, 'r')
+bits=fread(fid,inf,'*uint8');
+fclose(fid)
+
+
+seq_original=reshape(bits,1,length(bits));
+
+uv = unique(seq_original);
+counts  = histc(seq_original,uv);
+
+aux=ones(1,length(seq_original));
+aux=aux.*47;
+seq=seq_original-uint8(aux);
+
+code=arithenco(seq,counts);
+
+indseqdec=arithdeco(code,counts,length(seq));
+%definir alfa
+seqdecf=uv(indseqdec);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq_original,seqdecf))
+
+%% texto100000
+clear all;close all; clc;
+
+fichero='texto100000.txt'
+fid=fopen(fichero, 'r')
+bits=fread(fid,inf,'*uint8');
+fclose(fid)
+
+
+seq_original=reshape(bits,1,length(bits));
+
+uv = unique(seq_original);
+counts  = histc(seq_original,uv);
+
+aux=ones(1,length(seq_original));
+aux=aux.*47;
+seq=seq_original-uint8(aux);
+
+code=arithenco(seq,counts);
+
+indseqdec=arithdeco(code,counts,length(seq));
+%definir alfa
+seqdecf=uv(indseqdec);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq_original,seqdecf))
 end
 
 function [resultado]= entropiaJMRC(histograma)
