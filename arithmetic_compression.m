@@ -357,12 +357,188 @@ HuffmmanJMRC(fichero)
 
 
 %% Paso 16
+%% ptt1
+clear all;close all; clc;
 
+fichero='ptt1.pbm'
+img=imread(fichero);
+[M,N]=size(img);
+seq=uint8(reshape(img,1,M*N));
+uv = uint8(unique(seq));
+[counts,seq_index]=histc(seq,uv);
+
+code=arithenco(seq_index,counts);
+
+indseqdec=arithdeco(code,counts,length(seq_index));
+
+bar([1:numel(counts)],counts);
+seqdecf=uv(indseqdec);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,seqdecf))
+
+fprintf('tamaño original %d\n',numel(seq));
+fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
+fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+HuffmanImageJMRC(fichero)
+
+%% ptt4
+clear all;close all; clc;
+
+fichero='ptt4.pbm'
+img=imread(fichero);
+[M,N]=size(img);
+seq=uint8(reshape(img,1,M*N));
+uv = uint8(unique(seq));
+[counts,seq_index]=histc(seq,uv);
+
+code=arithenco(seq_index,counts);
+
+indseqdec=arithdeco(code,counts,length(seq_index));
+
+bar([1:numel(counts)],counts);
+seqdecf=uv(indseqdec);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,seqdecf))
+
+fprintf('tamaño original %d\n',numel(seq));
+fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
+fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+HuffmanImageJMRC(fichero)
+
+%% ptt8
+clear all;close all; clc;
+
+fichero='ptt8.pbm'
+img=imread(fichero);
+[M,N]=size(img);
+seq=uint8(reshape(img,1,M*N));
+uv = uint8(unique(seq));
+[counts,seq_index]=histc(seq,uv);
+
+code=arithenco(seq_index,counts);
+
+indseqdec=arithdeco(code,counts,length(seq_index));
+
+bar([1:numel(counts)],counts);
+seqdecf=uv(indseqdec);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,seqdecf))
+
+fprintf('tamaño original %d\n',numel(seq));
+fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
+fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+HuffmanImageJMRC(fichero)
+
+%% camera
+clear all;close all; clc;
+
+fichero='camera.pgm'
+img=imread(fichero);
+[M,N]=size(img);
+seq=uint8(reshape(img,1,M*N));
+uv = uint8(unique(seq));
+[counts,seq_index]=histc(seq,uv);
+
+code=arithenco(seq_index,counts);
+
+indseqdec=arithdeco(code,counts,length(seq_index));
+
+bar([1:numel(counts)],counts);
+seqdecf=uv(indseqdec);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,seqdecf))
+
+fprintf('tamaño original %d\n',numel(seq));
+fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
+fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+HuffmanImageJMRC(fichero)
+
+%% bird
+clear all;close all; clc;
+
+fichero='bird.pgm'
+img=imread(fichero);
+[M,N]=size(img);
+seq=uint8(reshape(img,1,M*N));
+uv = uint8(unique(seq));
+[counts,seq_index]=histc(seq,uv);
+
+code=arithenco(seq_index,counts);
+
+indseqdec=arithdeco(code,counts,length(seq_index));
+
+bar([1:numel(counts)],counts);
+seqdecf=uv(indseqdec);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,seqdecf))
+
+fprintf('tamaño original %d\n',numel(seq));
+fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
+fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+HuffmanImageJMRC(fichero)
+
+%% bridge
+clear all;close all; clc;
+
+fichero='bridge.pgm'
+img=imread(fichero);
+[M,N]=size(img);
+seq=uint8(reshape(img,1,M*N));
+uv = uint8(unique(seq));
+[counts,seq_index]=histc(seq,uv);
+
+code=arithenco(seq_index,counts);
+
+indseqdec=arithdeco(code,counts,length(seq_index));
+
+bar([1:numel(counts)],counts);
+seqdecf=uv(indseqdec);
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq,seqdecf))
+
+fprintf('tamaño original %d\n',numel(seq));
+fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
+fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+HuffmanImageJMRC(fichero)
 
 end
 
+
+function [resultado]=HuffmanImageJMRC(archivo)
+
+img=uint8(imread(archivo));
+
+[M,N]=size(img);
+seq=reshape(img,1,M*N);
+letras=[0:256];
+histo=hist(seq,letras);  
+
+pos_hist_posit=find(histo>0);
+letras_usadas=letras(pos_hist_posit);  
+hist_letras_usadas=histo(pos_hist_posit);  
+prob_letras_usadas=hist_letras_usadas/sum(hist_letras_usadas(:));  
+
+
+[dict,avglen] = huffmandict(letras_usadas,prob_letras_usadas) ; 
+seq_codificada = huffmanenco(seq,dict); 
+
+L=(length(letras_usadas)+1)*2+ ...
+    (length(letras_usadas)+1)*8+ ...
+    ceil(length(seq_codificada)/8);
+
+fprintf('Huffman: Tamaño del fichero original de img en bytes %d\n',M*N);
+deco=huffmandeco(seq_codificada,dict);
+fprintf('Huffman: Factor de compresión de img %3.5f\n\n',M*N/L)
+deco=huffmandeco(seq_codificada,dict);
+fprintf('Huffman: Bits por dato  %d\n',numel(seq_codificada)/numel(seq))
+
+resultado=isequal(seq,deco)
+
+end
+
+
 function [resultado]= HuffmmanJMRC(archivo)
-    fichero= archivo
+    fichero= archivo;
     fid=fopen(fichero,'r')
     seq=fread(fid,'*uint8');
     fclose(fid);
