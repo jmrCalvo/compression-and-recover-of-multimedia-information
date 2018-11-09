@@ -103,7 +103,7 @@ for j=1:6
    medias=[medias,media]
 end
 
-subplot(1,3,1);plot(entropias);%dibujar por puntos
+subplot(1,3,1);plot(entropias,'.r');%dibujar por puntos
 subplot(1,3,2);bar([1:30],sol);
 subplot(1,3,3);bar([1:6],medias);
 
@@ -133,8 +133,10 @@ indseqdec=arithdeco(code,counts,length(seq));
 seqdecf=uv(indseqdec);
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq_original,seqdecf))
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq_original));
 
+tam=ceil(length(code)/8);
+fc=numel(seq_original)/tam;
+fprintf('Bits por dato  %d\n',8/fc);
 
 %% texto100
 clear all;close all; clc;
@@ -161,7 +163,13 @@ indseqdec=arithdeco(code,counts,length(seq));
 seqdecf=uv(indseqdec);
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq_original,seqdecf))
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq_original));
+fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
+    isequal(seq_original,seqdecf))
+
+tam=ceil(length(code)/8);
+fc=numel(seq_original)/tam;
+fprintf('Bits por dato  %d\n',8/fc);
+
 %% texto1000
 clear all;close all; clc;
 
@@ -187,8 +195,10 @@ indseqdec=arithdeco(code,counts,length(seq));
 seqdecf=uv(indseqdec);
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq_original,seqdecf))
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq_original));
 
+tam=ceil(length(code)/8);
+fc=numel(seq_original)/tam;
+fprintf('Bits por dato  %d\n',8/fc);
 %% texto10000
 clear all;close all; clc;
 
@@ -215,7 +225,9 @@ seqdecf=uv(indseqdec);
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq_original,seqdecf))
 
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq_original));
+tam=ceil(length(code)/8);
+fc=numel(seq_original)/tam;
+fprintf('Bits por dato  %d\n',8/fc);
 
 %% texto100000
 clear all;close all; clc;
@@ -242,7 +254,10 @@ indseqdec=arithdeco(code,counts,length(seq));
 seqdecf=uv(indseqdec);
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq_original,seqdecf))
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq_original));
+
+tam=ceil(length(code)/8);
+fc=numel(seq_original)/tam;
+fprintf('Bits por dato  %d\n',8/fc);
 
 %% texto1000000
 clear all;close all; clc;
@@ -269,7 +284,10 @@ indseqdec=arithdeco(code,counts,length(seq));
 seqdecf=uv(indseqdec);
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq_original,seqdecf))
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq_original));
+
+tam=ceil(length(code)/8);
+fc=numel(seq_original)/tam;
+fprintf('Bits por dato  %d\n',8/fc);
 
 
 %% Paso 15
@@ -286,7 +304,7 @@ fclose(fid)
 seq_original=reshape(bits,1,length(bits));
 
 uv = unique(seq_original);
-[counts,seq_index]  = histc(seq_original,uv);
+[counts seq_index]  = histc(seq_original,uv);
 
 code=arithenco(seq_index,counts);
 
@@ -294,11 +312,16 @@ indseqdec=arithdeco(code,counts,length(seq_index));
 
 bar([1:numel(counts)],counts);
 seqdecf=uv(indseqdec);
+
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq_original,seqdecf))
+
 fprintf('tamaño original %d\n',numel(seq_original));
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq_original));
-fprintf('factor de compresion %d\n',numel(seq_original)/numel(code));
+tam=ceil(length(code)/8);
+fc=numel(seq_original)/tam;
+fprintf('factor de compresion %d\n',fc);
+fprintf('Bits por dato  %d\n',8/fc);
+
 HuffmmanJMRC(fichero)
 %% constitucion española
 clear all;close all; clc;
@@ -324,8 +347,11 @@ fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq_original,seqdecf))
 
 fprintf('tamaño original %d\n',numel(seq_original));
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq_original));
-fprintf('factor de compresion %d\n',numel(seq_original)/numel(code));
+tam=ceil(length(code)/8);
+fc=numel(seq_original)/tam;
+fprintf('factor de compresion %d\n',fc);
+fprintf('Bits por dato  %d\n',8/fc);
+
 HuffmmanJMRC(fichero)
 %% FUNDACION E IMPERIO - Isaac Asimov
 clear all;close all; clc;
@@ -347,14 +373,17 @@ indseqdec=arithdeco(code,counts,length(seq_index));
 
 bar([1:numel(counts)],counts);
 seqdecf=uv(indseqdec);
+
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq_original,seqdecf))
 
 fprintf('tamaño original %d\n',numel(seq_original));
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq_original));
-fprintf('factor de compresion %d\n',numel(seq_original)/numel(code));
-HuffmmanJMRC(fichero)
+tam=ceil(length(code)/8);
+fc=numel(seq_original)/tam;
+fprintf('factor de compresion %d\n',fc);
+fprintf('Bits por dato  %d\n',8/fc);
 
+HuffmmanJMRC(fichero)
 
 %% Paso 16
 %% ptt1
@@ -373,12 +402,16 @@ indseqdec=arithdeco(code,counts,length(seq_index));
 
 bar([1:numel(counts)],counts);
 seqdecf=uv(indseqdec);
+
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq,seqdecf))
 
 fprintf('tamaño original %d\n',numel(seq));
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
-fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+tam=ceil(length(code)/8);
+fc=numel(seq)/tam;
+fprintf('factor de compresion %d\n',fc);
+fprintf('Bits por dato  %d\n',8/fc);
+
 HuffmanImageJMRC(fichero)
 
 %% ptt4
@@ -397,12 +430,16 @@ indseqdec=arithdeco(code,counts,length(seq_index));
 
 bar([1:numel(counts)],counts);
 seqdecf=uv(indseqdec);
+
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq,seqdecf))
 
 fprintf('tamaño original %d\n',numel(seq));
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
-fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+tam=ceil(length(code)/8);
+fc=numel(seq)/tam;
+fprintf('factor de compresion %d\n',fc);
+fprintf('Bits por dato  %d\n',8/fc);
+
 HuffmanImageJMRC(fichero)
 
 %% ptt8
@@ -421,12 +458,16 @@ indseqdec=arithdeco(code,counts,length(seq_index));
 
 bar([1:numel(counts)],counts);
 seqdecf=uv(indseqdec);
+
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq,seqdecf))
 
 fprintf('tamaño original %d\n',numel(seq));
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
-fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+tam=ceil(length(code)/8);
+fc=numel(seq)/tam;
+fprintf('factor de compresion %d\n',fc);
+fprintf('Bits por dato  %d\n',8/fc);
+
 HuffmanImageJMRC(fichero)
 
 %% camera
@@ -445,12 +486,16 @@ indseqdec=arithdeco(code,counts,length(seq_index));
 
 bar([1:numel(counts)],counts);
 seqdecf=uv(indseqdec);
+
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq,seqdecf))
 
 fprintf('tamaño original %d\n',numel(seq));
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
-fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+tam=ceil(length(code)/8);
+fc=numel(seq)/tam;
+fprintf('factor de compresion %d\n',fc);
+fprintf('Bits por dato  %d\n',8/fc);
+
 HuffmanImageJMRC(fichero)
 
 %% bird
@@ -469,12 +514,16 @@ indseqdec=arithdeco(code,counts,length(seq_index));
 
 bar([1:numel(counts)],counts);
 seqdecf=uv(indseqdec);
+
 fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq,seqdecf))
 
 fprintf('tamaño original %d\n',numel(seq));
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
-fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+tam=ceil(length(code)/8);
+fc=numel(seq)/tam;
+fprintf('factor de compresion %d\n',fc);
+fprintf('Bits por dato  %d\n',8/fc);
+
 HuffmanImageJMRC(fichero)
 
 %% bridge
@@ -497,8 +546,11 @@ fprintf('¿Coinciden original y comprimido 1(S) 0 (N)?, %d\n',...
     isequal(seq,seqdecf))
 
 fprintf('tamaño original %d\n',numel(seq));
-fprintf('Longitud de Bit por simbolo %d\n',numel(code)/numel(seq));
-fprintf('factor de compresion %d\n',numel(seq)/numel(code));
+tam=ceil(length(code)/8);
+fc=numel(seq)/tam;
+fprintf('factor de compresion %d\n',fc);
+fprintf('Bits por dato  %d\n',8/fc);
+
 HuffmanImageJMRC(fichero)
 
 end
@@ -522,15 +574,14 @@ prob_letras_usadas=hist_letras_usadas/sum(hist_letras_usadas(:));
 [dict,avglen] = huffmandict(letras_usadas,prob_letras_usadas) ; 
 seq_codificada = huffmanenco(seq,dict); 
 
-L=(length(letras_usadas)+1)*2+ ...
-    (length(letras_usadas)+1)*8+ ...
-    ceil(length(seq_codificada)/8);
+L=ceil(length(seq_codificada)/8);
 
 fprintf('Huffman: Tamaño del fichero original de img en bytes %d\n',M*N);
 deco=huffmandeco(seq_codificada,dict);
-fprintf('Huffman: Factor de compresión de img %3.5f\n\n',M*N/L)
+factorcompresion=M*N/L;
+fprintf('Huffman: Factor de compresión de img %3.5f\n\n',factorcompresion)
 deco=huffmandeco(seq_codificada,dict);
-fprintf('Huffman: Bits por dato  %d\n',numel(seq_codificada)/numel(seq))
+fprintf('Huffman: Bits por dato  %d\n',8/factorcompresion)
 
 resultado=isequal(seq,deco)
 
@@ -554,19 +605,17 @@ function [resultado]= HuffmmanJMRC(archivo)
     [dict,avglen] = huffmandict(letras_usadas,prob_letras_usadas) ; %construimos el diccionario
     seq_codificada = huffmanenco(seq,dict); %codificamos la señal
 
-    tamagno_comprimido=(length(letras_usadas)+1)*1+ ...
-    (length(letras_usadas)+1)*8+ ...
-    ceil(length(seq_codificada)/8);
-    fprintf('Huffman: Bits por dato  %d\n',tamagno_comprimido/numel(seq))
+    tamagno_comprimido=ceil(length(seq_codificada)/8);
     
     factorcompresion=numel(seq)/tamagno_comprimido;
     fprintf('Huffman: factor de compresion %d\n',factorcompresion)
     
+    fprintf('Huffman: Bits por dato  %d\n',8/factorcompresion)
     deco=huffmandeco(seq_codificada,dict);
     resultado=isequal(seq,uint8(deco))
     
     
-end
+    end
 function [resultado]= entropiaJMRC(histograma)
     
 suma=sum(histograma);
