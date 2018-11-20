@@ -2,11 +2,14 @@
 
 % Tiempo: Incluye aquí el tiempo dedicado a realizar el guion
 
-function pratica3JMRC()
+function pratica5JMRC()
 
 %% Paso 2
 close all; clear all;
 img=imread("bird.pgm");
+
+s=dir("bird.pgm");
+tamOrig=s.bytes
 
 for i = 5:5:100 
     filename=sprintf('result/bird%i.jpeg',i)
@@ -14,26 +17,29 @@ for i = 5:5:100
 end
 
 
-%% Paso 4
-close all; clear all;
+%% Paso 4 int16
+close all;
 
 imgOriginal=imread("bird.pgm");
 [Mo,No]=size(imgOriginal);
-seqOriginal=uint8(reshape(imgOriginal,1,Mo*No));
+seqOriginal=int16(reshape(imgOriginal,1,Mo*No));
 
 tasas=[]
 distorsiones=[]
 
+% la tasa es el tamano del fichero original/fichero comprimido => 8/fc
 for i = 5:5:100 
     filename=sprintf('result/bird%i.jpeg',i);
     img=imread(filename);
     [M,N]=size(img);
-    seq=uint8(reshape(img,1,M*N));
-    uv = uint8(unique(seq));
-    counts=histc(seq,uv);
-    tam=numel(counts);
-    prob=counts./tam;
-    tasa=sum(prob./(M*N*0.125));
+    seq=int16(reshape(img,1,M*N));
+            
+    
+    s = dir(filename);
+    tamJPEG=s.bytes;
+    
+    fc=tamOrig/tamJPEG;
+    tasa=8/fc;
     
     dif=seqOriginal-seq;
     dif_cuadratic=dif.^2;
@@ -49,11 +55,8 @@ end
 %% Paso 6
 close all; clear all;clc;
 
-
-img=imread("bird.pgm");
-
 for i = 2:2:40 
-    filename=sprintf('result/bird%i.jp2',i)
+    filename=sprintf('result/bird%i.jp2',i);
     imwrite(img,filename,'CompressionRatio',i);
     
 end
@@ -62,8 +65,12 @@ end
 close all; clear all;
 
 imgOriginal=imread("bird.pgm");
+
+s=dir("bird.pgm");
+tamOrig=s.bytes
+
 [Mo,No]=size(imgOriginal);
-seqOriginal=uint8(reshape(imgOriginal,1,Mo*No));
+seqOriginal=uint16(reshape(imgOriginal,1,Mo*No));
 
 tasas=[]
 distorsiones=[]
@@ -72,12 +79,12 @@ for i = 40:-2:2
     filename=sprintf('result/bird%i.jp2',i);
     img=imread(filename);
     [M,N]=size(img);
-    seq=uint8(reshape(img,1,M*N));
-    uv = uint8(unique(seq));
-    counts=histc(seq,uv);
-    tam=numel(counts);
-    prob=counts./tam;
-    tasa=sum(prob./(M*N*0.125));
+    seq=uint16(reshape(img,1,M*N));
+    s = dir(filename);
+    tamJPG2000=s.bytes;
+    
+    fc=tamOrig/tamJPG2000;
+    tasa=8/fc;
     
     dif=seqOriginal-seq;
     dif_cuadratic=dif.^2;
@@ -95,6 +102,9 @@ end
 close all; clear all;
 
 imgOriginal=imread("bird.pgm");
+s=dir("bird.pgm");
+tamOrig=s.bytes
+
 [Mo,No]=size(imgOriginal);
 seqOriginal=uint8(reshape(imgOriginal,1,Mo*No));
 
@@ -108,11 +118,11 @@ for i = 5:5:100
     img=imread(filename);
     [M,N]=size(img);
     seq=uint8(reshape(img,1,M*N));
-    uv = uint8(unique(seq));
-    counts=histc(seq,uv);
-    tam=numel(counts);
-    prob=counts./tam;
-    tasa=sum(prob./(M*N*0.125));
+    s = dir(filename);
+    tamJPG2000=s.bytes;
+    
+    fc=tamOrig/tamJPG2000;
+    tasa=8/fc;
     
     dif=seqOriginal-seq;
     dif_cuadratic=dif.^2;
@@ -128,11 +138,11 @@ for i = 40:-2:2
     img=imread(filename);
     [M,N]=size(img);
     seq=uint8(reshape(img,1,M*N));
-    uv = uint8(unique(seq));
-    counts=histc(seq,uv);
-    tam=numel(counts);
-    prob=counts./tam;
-    tasa=sum(prob./(M*N*0.125));
+    s = dir(filename);
+    tamJPG2000=s.bytes;
+    
+    fc=tamOrig/tamJPG2000;
+    tasa=8/fc;
     
     dif=seqOriginal-seq;
     dif_cuadratic=dif.^2;
