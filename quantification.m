@@ -16,17 +16,19 @@ end
 
 %% Paso 2
 close all; clear all;
-adouble=double(imread("bridge.pgm"));
+adouble=reshape(double(imread("bridge.pgm")),65536,1);
 errors=[];
 entropias=[];
 [M,N]=size(adouble);
 for i=0:8
     factor=2^i;
     Q_X=double(floor(factor*(floor(adouble(:)/factor)+0.5)));
-    img=reshape(Q_X,[256,256]);
-    error=sum(reshape((adouble-img).^2,1,M*N))/(M*N);
+
+    error=sum((Q_X-adouble).^2/(M*N));
     errors=[errors,error];
-    entropia=entropiaJMRC(img);
+    
+    histograma= histc(Q_X,unique(Q_X));
+    entropia=entropiaJMRC(histograma);
     entropias=[entropias,entropia];
 end
 plot(entropias,errors,'.r');
@@ -119,70 +121,27 @@ for i=1:8
 end
 plot(n,errors);
 legend('error medio')
-%% paso 13
-
+%% paso 15
+[M,N]=size(X);
+X_O=double(reshape(X,1,M*N));
 errors=[]
 n=[1:8];
 for i=1:8
     factor=2^i;
-    rng('default');
-    Valor=double(rand(1,factor).*max(X));
-    minv=ones(1,length(Valor))*min(X);
-    Valor=Valor+minv;
-    %it is the first random values
-    old_Valor=zeros(1,length(Valor));
-    Zero=zeros(1,length(Valor));
-    while (round(Valor-old_Valor,3)~=Zero)
-        tam=[];
-        groups=[];
-        groups=zeros(length(X),factor);
-        
-        for k=1:length(X)
-            position_i=near(Valor,X(k));
-            position_j=find(groups(:,position_i)==0,1);
-            groups(position_j,position_i)=X(k);
-        end
-        
-        sumatori=sum(groups);
-        for j=1:factor
-            tam=[tam,length(find(groups(:,j)~=0))]
-        end
-        
-        old_Valor=Valor;
-        Valor=sumatori./tam;
-          
-    
-    error=0
-    
-    end
-    
-    for m=1:factor
-        error=error+sum((groups(:,m)-Valor(m)).^2)
-    end
-    
-    
-    error=error/length(X);
+    [partition,codebook]=lloyds(X,factor);
+    [index,Q_X]= quantiz(X_O,partition,codebook);
+    error=sum((X_O-Q_X).^2)/M;
     errors=[errors,error];
+    subplot(1,8,i);
+    name=sprintf('Figura con factor %i',factor);
+    hist(Q_X); title(name)
 end
-plot(n,errors);
-legend('error medio')    
-
+    close all;
+    plot(n,errors);
+    legend('error medio')
 end
 
 
-function [approached]=near(group,valor)
-    approached_partial=0;
-    min_valor=100000;
-    
-    for i=1:length(group)
-       approaching=(group(i)-valor)^2;
-       if approaching < min_valor
-           min_valor=approaching;
-           approached_partial=i;
-       end
-    end
-    approached=approached_partial
-end
 
 function [resultado]= entropiaJMRC(histograma)
     
