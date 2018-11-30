@@ -14,9 +14,9 @@ tamOrig=s.bytes
 for i = 5:5:100 
     filename=sprintf('result/bird%i.jpeg',i)
     imwrite(img, filename, 'Quality', i);
+    ends
+
 end
-
-
 %% Paso 4 int16
 close all;
 
