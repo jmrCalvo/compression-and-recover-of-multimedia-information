@@ -1,159 +1,124 @@
-%% Practica05RodriguezJoseManuel
+%% Practica07RodriguezJoseManuel
 
-% Tiempo: Incluye aquí el tiempo dedicado a realizar el guion
+function pratica7JMRC()
+%% Paso 1
+clc;clear all;close all;
 
-function pratica5JMRC()
+[y,fs]=audioread('lazyrn.16bits.wav');
 
 %% Paso 2
-close all; clear all;
-img=imread("bird.pgm");
 
-s=dir("bird.pgm");
-tamOrig=s.bytes
+plot(y);
+sound(y,fs);
 
-for i = 5:5:100 
-    filename=sprintf('result/bird%i.jpeg',i)
-    imwrite(img, filename, 'Quality', i);
-    ends
+%% Paso 3
 
-end
-%% Paso 4 int16
-close all;
+predictor=dpcmopt(y,1)
 
-imgOriginal=imread("bird.pgm");
-[Mo,No]=size(imgOriginal);
-seqOriginal=int16(reshape(imgOriginal,1,Mo*No));
+%% Paso 4
 
-tasas=[]
-distorsiones=[]
+[predictor,codebook,partition]=dpcmopt(y,1,4);
 
-% la tasa es el tamano del fichero original/fichero comprimido => 8/fc
-for i = 5:5:100 
-    filename=sprintf('result/bird%i.jpeg',i);
-    img=imread(filename);
-    [M,N]=size(img);
-    seq=int16(reshape(img,1,M*N));
-            
-    
-    s = dir(filename);
-    tamJPEG=s.bytes;
-    
-    fc=tamOrig/tamJPEG;
-    tasa=8/fc;
-    
-    dif=seqOriginal-seq;
-    dif_cuadratic=dif.^2;
-    
-    error=sum(dif_cuadratic)/(M*N);
-    
-    fprintf('La razon de bird %i es %3.5f y el error es %3.5f\n\n',i,tasa,error)
-    tasas=[tasas,tasa];
-    distorsiones=[distorsiones,error];
-    
-    plot(tasas,distorsiones,'.r');
-end
+%% Paso 5
+
+indx=dpcmenco(y,codebook,partition,predictor);
+
 %% Paso 6
-close all; clear all;clc;
 
-for i = 2:2:40 
-    filename=sprintf('result/bird%i.jp2',i);
-    imwrite(img,filename,'CompressionRatio',i);
-    
-end
+y2= dpcmdeco(indx,codebook,predictor);
+sound(y2,fs);
 
 %% Paso 7
-close all; clear all;
 
-imgOriginal=imread("bird.pgm");
+plot(y(1:150),'b')
+hold on; 
+plot(y2(1:150),'r'); 
+error = y(:)-y2(:);
+plot(error(1:150),'g'); 
+legend('original', 'reconstruida', 'error')
+sound(error,fs)
 
-s=dir("bird.pgm");
-tamOrig=s.bytes
-
-[Mo,No]=size(imgOriginal);
-seqOriginal=uint16(reshape(imgOriginal,1,Mo*No));
-
-tasas=[]
-distorsiones=[]
-
-for i = 40:-2:2 
-    filename=sprintf('result/bird%i.jp2',i);
-    img=imread(filename);
-    [M,N]=size(img);
-    seq=uint16(reshape(img,1,M*N));
-    s = dir(filename);
-    tamJPG2000=s.bytes;
-    
-    fc=tamOrig/tamJPG2000;
-    tasa=8/fc;
-    
-    dif=seqOriginal-seq;
-    dif_cuadratic=dif.^2;
-    
-    error=sum(dif_cuadratic)/(M*N);
-    
-    fprintf('La razon de bird %i es %3.5f y el error es %3.5f\n\n',i,tasa,error)
-    tasas=[tasas,tasa];
-    distorsiones=[distorsiones,error];
-    
-    plot(tasas,distorsiones,'.r');
-end
+%% Paso 8
+t=max(indx(:))
+whos
 
 %% Paso 10
+
+uv = unique(indx);
+
+histograma=histc(indx,uv);
+plot(uv,histograma,'.r','Marker','d');
+entropie=entropiaJMRC(histograma);
+
+y_trans=reshape(y,1,length(y));
+error=sum((y_trans-y2).^2)/length(y);
+
+
+%% Paso 13
+
 close all; clear all;
+x=[0:999]/1000;
+y=sin(10*pi*x);
+plot(x,y)
 
-imgOriginal=imread("bird.pgm");
-s=dir("bird.pgm");
-tamOrig=s.bytes
 
-[Mo,No]=size(imgOriginal);
-seqOriginal=uint8(reshape(imgOriginal,1,Mo*No));
+[predictor,codebook,partition]=dpcmopt(y,1,8);
+indx=dpcmenco(y,codebook,partition,predictor);
+y2= dpcmdeco(indx,codebook,predictor);
 
-tasasJPEG=[]
-distorsionesJPEG=[]
-tasasJPEG2000=[]
-distorsionesJPEG2000=[]
+uv = unique(indx);
+histograma=histc(indx,uv);
+plot(uv,histograma,'.r','Marker','d');
 
-for i = 5:5:100 
-    filename=sprintf('result/bird%i.jpeg',i);
-    img=imread(filename);
-    [M,N]=size(img);
-    seq=uint8(reshape(img,1,M*N));
-    s = dir(filename);
-    tamJPG2000=s.bytes;
-    
-    fc=tamOrig/tamJPG2000;
-    tasa=8/fc;
-    
-    dif=seqOriginal-seq;
-    dif_cuadratic=dif.^2;
-    
-    error=sum(dif_cuadratic)/(M*N);
-    tasasJPEG=[tasasJPEG,tasa];
-    distorsionesJPEG=[distorsionesJPEG,error];
-    
-    
+entropie=entropiaJMRC(histograma);
+error=sum((y-y2).^2)/length(y);
+%% Paso 16
+
+close all; clear all;
+qx=[0:999]/1000;
+qy=cos(10*pi*qx);
+plot(qx,qy);
+
+%% Paso 18 
+
+y_f=qy(2:length(qy));
+y_t=qy(1:length(qy)-1);
+
+predictor=dpcmopt(y_f,1);
+
+%m=ones(2,2);
+%m(1,1)=sum(y_f.^2);
+%m(2,1)=sum(y_f);
+%m(1,2)=sum(y_f);
+%m(2,2)=length(y_f);
+%m_inv=m^-1;
+
+%n=ones(2,1);
+
+%n(2,1)=sum(y_f.*y_t);
+%n(1,1)=sum(y_t);
+
+%sol=m_inv*n;
+
+syms x y
+
+da=sum(y_f.*y_t)-sum(y_t.^2)*x-sum(y_t)*y==0;
+db=sum(y_f)-sum(y_t)*x-length(qy)*y==0;
+
+S=solve(da,db,[x y],'ReturnConditions', true)
+
+vpa(S.x)
+vpa(S.y)
+
 end
-for i = 40:-2:2 
-    filename=sprintf('result/bird%i.jp2',i);
-    img=imread(filename);
-    [M,N]=size(img);
-    seq=uint8(reshape(img,1,M*N));
-    s = dir(filename);
-    tamJPG2000=s.bytes;
-    
-    fc=tamOrig/tamJPG2000;
-    tasa=8/fc;
-    
-    dif=seqOriginal-seq;
-    dif_cuadratic=dif.^2;
-    
-    error=sum(dif_cuadratic)/(M*N);
-    tasasJPEG2000=[tasasJPEG2000,tasa];
-    distorsionesJPEG2000=[distorsionesJPEG2000,error];
-    
-    
-end
 
-    plot(tasasJPEG,distorsionesJPEG,tasasJPEG2000,distorsionesJPEG2000);
+
+function [resultado]= entropiaJMRC(histograma)
+
+histogramaNZ=histograma;
+histogramaNZ(find(histogramaNZ==0.0))=[];
+suma=sum(histogramaNZ);
+prob= histogramaNZ./suma;
+resultado=-sum(prob.*log2(prob));
 
 end
