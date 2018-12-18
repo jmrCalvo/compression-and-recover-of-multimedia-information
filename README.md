@@ -1,2 +1,2 @@
 # compression-and-recover-of-multimedia-information
-this is different projects developed in the subject compression and recover of multimedia information attended in Ugr
+the main problem is to code images using less memory, also working with videos and music, but the main development was over images.
